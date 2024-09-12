@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: math-api-deployment
+  labels:
+    app: math-api
+spec:
+  replicas: 3  # Number of desired replicas
+  selector:
+    matchLabels:
+      app: math-api
+  template:
+    metadata:
+      labels:
+        app: math-api
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:latest  # Replace with your Docker image name and tag
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000  # Should match the value from the ConfigMap
+        env:
+        - name: FLASK_ENV
+          value: "production"  # Optional: Set environment variables if needed
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PORT  # Fetch the port from the ConfigMap
